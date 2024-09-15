@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableSelectionMultipleChangeEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { OverlayPanel } from 'primereact/overlaypanel';
@@ -20,7 +20,7 @@ const Page: React.FC = () => {
   const [page, setPage] = useState<number>(1); // Track current page
   const [selectedRows, setSelectedRows] = useState<ArtworkData[]>([]); // Global selected rows
   const [data, setData] = useState<ArtworkData[]>([]); // Data for the current page
-  const [rowsToSelect, setRowsToSelect] = useState<number>(); // Number of rows to select from input
+  const [rowsToSelect, setRowsToSelect] = useState<number>(0); // Number of rows to select from input
   const rowsPerPage = 12; // Set rows per page to 12 (constant)
 
   // Fetch artwork data from API based on current page
@@ -90,6 +90,15 @@ const Page: React.FC = () => {
 
   const op = useRef<OverlayPanel>(null);
 
+  // Handle row click for selection
+  const onRowClick = (event: any) => {
+    const clickedRow = event.data;
+    const newSelection = selectedRows.some(row => row.id === clickedRow.id)
+      ? selectedRows.filter(row => row.id !== clickedRow.id)
+      : [...selectedRows, clickedRow];
+    setSelectedRows(newSelection);
+  };
+
   return (
     <div className="card">
       <div className="card flex justify-content-center">
@@ -103,7 +112,6 @@ const Page: React.FC = () => {
         <OverlayPanel ref={op}>
           <input
             type="text"
-            // value={rowsToSelect }
             onChange={handleRowsInputChange}
             placeholder="Enter Rows"
             className="p-2 border-black"
@@ -112,12 +120,16 @@ const Page: React.FC = () => {
         </OverlayPanel>
       </div>
 
-      <DataTable   className=''
+      <DataTable
+        className=''
         value={data}
         selection={selectedRows}
-        onSelectionChange={(e) => setSelectedRows(e.value)}
+        onSelectionChange={(e: DataTableSelectionMultipleChangeEvent<ArtworkData[]>) => setSelectedRows(e.value)}
         dataKey="id"
         tableStyle={{ minWidth: '50rem' }}
+        selectionMode="multiple"
+        metaKeySelection={false}
+        onRowClick={onRowClick}
       >
         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
         <Column field="title" header="Title"></Column>
