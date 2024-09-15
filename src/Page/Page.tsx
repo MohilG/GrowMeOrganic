@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { OverlayPanel } from 'primereact/overlaypanel';
 
-// Define the type for artwork data
 interface ArtworkData {
   id: number;
   title: string;
@@ -18,12 +17,11 @@ interface ArtworkData {
 const Page: React.FC = () => {
   const totalRecords = 126079; // Total records count from API
   const [page, setPage] = useState<number>(1); // Track current page
-  const [selectedRows, setSelectedRows] = useState<ArtworkData[]>([]); // Global selected rows
-  const [data, setData] = useState<ArtworkData[]>([]); // Data for the current page
-  const [rowsToSelect, setRowsToSelect] = useState<number>(0); // Number of rows to select from input
-  const rowsPerPage = 12; // Set rows per page to 12 (constant)
+  const [selectedRows, setSelectedRows] = useState<ArtworkData[]>([]); 
+  const [data, setData] = useState<ArtworkData[]>([]); 
+  const [rowsToSelect, setRowsToSelect] = useState<number>(0); 
+  const rowsPerPage = 12; 
 
-  // Fetch artwork data from API based on current page
   const fetchPage = async (pageNumber: number) => {
     const options = {
       method: 'GET',
@@ -90,7 +88,6 @@ const Page: React.FC = () => {
 
   const op = useRef<OverlayPanel>(null);
 
-  // Handle row click for selection
   const onRowClick = (event: any) => {
     const clickedRow = event.data;
     const newSelection = selectedRows.some(row => row.id === clickedRow.id)
